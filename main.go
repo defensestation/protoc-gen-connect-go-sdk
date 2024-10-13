@@ -266,9 +266,9 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	// generateSDKClientImplementation(g, service, names)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
-	generateServerInterface(g, service, names)   //:::Modified:::
-	generateServerConstructor(g, service, names)   //:::Modified:::
-	generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
+	// generateServerInterface(g, service, names)   //:::Modified:::
+	// generateServerConstructor(g, service, names)   //:::Modified:::
+	// generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
 }
 
 func generateClientInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
