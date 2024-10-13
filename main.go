@@ -376,8 +376,7 @@ func clientSignature(g *protogen.GeneratedFile, method *protogen.Method, named b
 	}
 	if method.Desc.IsStreamingServer() {
 		return method.GoName + "(" + ctxName + " " + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-			", " + reqName + " *" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
-			g.QualifiedGoIdent(method.Input.GoIdent) + "]) " +
+			", " + reqName + " *" + g.QualifiedGoIdent(method.Input.GoIdent) + ") " +  // this has changes to remove request generic  //:::Modified:::
 			"(*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStreamForClient")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
 			", error)"
@@ -510,7 +509,8 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	if method.Desc.IsStreamingServer() {
 		// server streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-			", " + reqName + "*" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + // this has changes to remove request generic  //:::Modified:::
+			", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
+			g.QualifiedGoIdent(method.Input.GoIdent) + "]) " + 
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
 			") erroraaa"
