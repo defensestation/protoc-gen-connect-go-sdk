@@ -42,8 +42,7 @@
 // changes made
 // generatedFilenameExtension = ".connect.go" --> ".client.go"
 // generatedPackageSuffix     = "connect" --> ""
-//
-//
+// all modified code is comment like :::Modified:::
 package main
 
 import (
@@ -267,9 +266,9 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	generateSDKClientImplementation(g, service, names)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
-	// generateServerInterface(g, service, names)   //:::Modified:::
-	// generateServerConstructor(g, service, names)   //:::Modified:::
-	// generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
+	generateServerInterface(g, service, names)   //:::Modified:::
+	generateServerConstructor(g, service, names)   //:::Modified:::
+	generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
 }
 
 func generateClientInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
@@ -369,13 +368,13 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 		g.P("return c.", unexport(method.GoName), ".CallClientStream(ctx)")
 	case !isStreamingClient && isStreamingServer:
 		// g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, req)")    //:::Modified:::
-		g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("Request"),"(req))")  // modified to wrap the request
+		g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("NewRequest"),"(req))")  // modified to wrap the request
 
 	case isStreamingClient && isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
 		// g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")   //:::Modified:::
-		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, ",connectPackage.Ident("Request"),"(req))")  // modified to wrap the request and response to message type
+		g.P("res, err := c.", unexport(method.GoName), ".CallUnary(ctx, ",connectPackage.Ident("NewRequest"),"(req))")  // modified to wrap the request and response to message type
 		g.P("if err != nil { return nil, err }")
 		g.P("return res.Msg, nil")
 	}
