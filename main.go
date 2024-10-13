@@ -346,7 +346,7 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 		g.P("res := c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("Request"),"(req))")
 		g.P("if err != nil { return nil, err }")
 		g.P("return res.Msg, nil")
-		
+
 	case isStreamingClient && isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
@@ -513,7 +513,7 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	if method.Desc.IsStreamingServer() {
 		// server streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-			", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
+			", " + reqName + "*" + g.QualifiedGoIdent("Request") + "[" +
 			g.QualifiedGoIdent(method.Input.GoIdent) + "], " +
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
