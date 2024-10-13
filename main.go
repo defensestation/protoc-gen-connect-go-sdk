@@ -240,7 +240,7 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	names := newNames(service)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
-	generateServerInterface(g, service, names)
+	// generateServerInterface(g, service, names)
 	// generateServerConstructor(g, service, names)
 	// generateUnimplementedServerImplementation(g, service, names)
 }
