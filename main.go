@@ -63,6 +63,11 @@ import (
 )
 
 const (
+	// skd paths
+	sdkConfigPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/config")
+	sdkdsInterceptorPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/middleware/interceptors")
+	sdkendpointPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/endpoints")
+
 	contextPackage = protogen.GoImportPath("context")
 	errorsPackage  = protogen.GoImportPath("errors")
 	httpPackage    = protogen.GoImportPath("net/http")
@@ -81,6 +86,27 @@ const (
 	protoSyntaxFieldNum  = 12
 	protoPackageFieldNum = 2
 )
+
+
+// method to generate sdk client
+
+func generateSDKClientImplementation(g *protogen.GeneratedFile, service *protogen.Service, names names) {
+	
+	constName := fmt.Sprintf("%sName", service.Desc.Name())
+
+	g.P("func NewClient(ctx "+ g.QualifiedGoIdent(contextPackage.Ident("Context")) +", cfg *"+ g.QualifiedGoIdent(sdkConfigPackage.Ident("Config")) +") ("+ names.Client +", error) {")
+	g.P("interceptors, err := "+ g.QualifiedGoIdent(sdkdsInterceptorPackage.Ident("LoadInterceptors")) +"(ctx, cfg, "+ constName +")") 
+	g.P("if err != nil {")
+	g.P("return nil, err")
+	g.P("}")
+	g.P("return " + names.ClientConstructor + "(")
+	g.P(g.QualifiedGoIdent(httpPackage.Ident("DefaultClient")) + ",")
+	g.P(g.QualifiedGoIdent(sdkendpointPackage.Ident("Resolve")) +"(cfg, " + constName + "),")
+	g.P(g.QualifiedGoIdent(connectPackage.Ident("WithGRPC")) + "(),")
+	g.P("interceptors,")
+	g.P("), nil")
+	g.P("}")
+}
 
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "--version" {
@@ -238,6 +264,7 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 
 func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	names := newNames(service)
+	generateSDKClientImplementation(g, service, names)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
 	// generateServerInterface(g, service, names)   //:::Modified:::
