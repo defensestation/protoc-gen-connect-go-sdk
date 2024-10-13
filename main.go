@@ -93,8 +93,8 @@ const (
 func generateSDKClientImplementation(g *protogen.GeneratedFile, service *protogen.Service, names names) {
 	
 	constName := fmt.Sprintf("%sName", service.Desc.Name())
-
-	g.P("func NewClient(ctx "+ g.QualifiedGoIdent(contextPackage.Ident("Context")) +", cfg *"+ g.QualifiedGoIdent(sdkConfigPackage.Ident("Config")) +") ("+ names.Client +", error) {")
+	g.P("// sdk user client with interceptors")
+	g.P("func New"+ names.Client +"Client(ctx "+ g.QualifiedGoIdent(contextPackage.Ident("Context")) +", cfg *"+ g.QualifiedGoIdent(sdkConfigPackage.Ident("Config")) +") ("+ names.Client +", error) {")
 	g.P("interceptors, err := "+ g.QualifiedGoIdent(sdkdsInterceptorPackage.Ident("LoadInterceptors")) +"(ctx, cfg, "+ constName +")") 
 	g.P("if err != nil {")
 	g.P("return nil, err")
