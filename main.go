@@ -666,7 +666,7 @@ func newNames(service *protogen.Service) names {
 	return names{
 		Base:                base,
 		Client:              fmt.Sprintf("%sClient", base),
-		ClientConstructor:   fmt.Sprintf("new%sClient", base), // changes to lower new to make it internal   //:::Modified:::
+		ClientConstructor:   fmt.Sprintf("New%sClient", base), // changes to lower new to make it internal   //:::Modified:::
 		ClientImpl:          fmt.Sprintf("%sClient", unexport(base)),
 		Server:              fmt.Sprintf("%sHandler", base),
 		ServerConstructor:   fmt.Sprintf("New%sHandler", base),
