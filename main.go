@@ -241,8 +241,8 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
 	generateServerInterface(g, service, names)
-	generateServerConstructor(g, service, names)
-	generateUnimplementedServerImplementation(g, service, names)
+	// generateServerConstructor(g, service, names)
+	// generateUnimplementedServerImplementation(g, service, names)
 }
 
 func generateClientInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
