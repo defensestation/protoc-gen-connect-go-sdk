@@ -64,7 +64,7 @@ const (
 	connectPackage = protogen.GoImportPath("connectrpc.com/connect")
 
 	generatedFilenameExtension = ".connect.go"
-	generatedPackageSuffix     = "connect"
+	generatedPackageSuffix     = ""
 
 	usage = "See https://connectrpc.com/docs/go/getting-started to learn how to use this plugin.\n\nFlags:\n  -h, --help\tPrint this help and exit.\n      --version\tPrint the version and exit."
 
