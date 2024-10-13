@@ -522,8 +522,8 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 		// bidi streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + ", " +
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("BidiStream")) +
-			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + ", (" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
-			") error)"
+			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
+			") error"
 	}
 	if method.Desc.IsStreamingClient() {
 		// client streaming
