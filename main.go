@@ -498,14 +498,14 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + ", " +
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("BidiStream")) +
 			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
-			") error"
+			") error1"
 	}
 	if method.Desc.IsStreamingClient() {
 		// client streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + ", " +
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ClientStream")) +
 			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + "]" +
-			") (*" + g.QualifiedGoIdent(connectPackage.Ident("Response")) + "[" + g.QualifiedGoIdent(method.Output.GoIdent) + "] ,error)"
+			") (*" + g.QualifiedGoIdent(connectPackage.Ident("Response")) + "[" + g.QualifiedGoIdent(method.Output.GoIdent) + "] ,error2)"
 	}
 	if method.Desc.IsStreamingServer() {
 		// server streaming
@@ -518,7 +518,7 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	// unary
 	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
 		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
-		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
+		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error3)"
 }
 
 func procedureConstName(m *protogen.Method) string {
