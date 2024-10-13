@@ -38,6 +38,12 @@
 //	gen/path/to/connectfoov1/file.connect.go
 //
 // [buf]: https://buf.build
+
+// changes made
+// generatedFilenameExtension = ".connect.go" --> ".client.go"
+// generatedPackageSuffix     = "connect" --> ""
+//
+//
 package main
 
 import (
@@ -63,7 +69,7 @@ const (
 	stringsPackage = protogen.GoImportPath("strings")
 	connectPackage = protogen.GoImportPath("connectrpc.com/connect")
 
-	generatedFilenameExtension = ".connect.go"
+	generatedFilenameExtension = ".client.go"
 	generatedPackageSuffix     = ""
 
 	usage = "See https://connectrpc.com/docs/go/getting-started to learn how to use this plugin.\n\nFlags:\n  -h, --help\tPrint this help and exit.\n      --version\tPrint the version and exit."
@@ -113,14 +119,14 @@ func generate(plugin *protogen.Plugin, file *protogen.File) {
 	generatedFilenamePrefixToSlash := filepath.ToSlash(file.GeneratedFilenamePrefix)
 	file.GeneratedFilenamePrefix = path.Join(
 		path.Dir(generatedFilenamePrefixToSlash),
-		string(file.GoPackageName),
+		// string(file.GoPackageName), // ensure to create in same dir
 		path.Base(generatedFilenamePrefixToSlash),
 	)
 	generatedFile := plugin.NewGeneratedFile(
 		file.GeneratedFilenamePrefix+generatedFilenameExtension,
 		protogen.GoImportPath(path.Join(
-			string(file.GoImportPath),
-			string(file.GoPackageName),
+			string(file.GoImportPath), 
+			// string(file.GoPackageName), // ensure to create in same dir
 		)),
 	)
 	generatedFile.Import(file.GoImportPath)
