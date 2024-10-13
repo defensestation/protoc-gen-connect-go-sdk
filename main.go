@@ -69,8 +69,8 @@ const (
 	stringsPackage = protogen.GoImportPath("strings")
 	connectPackage = protogen.GoImportPath("connectrpc.com/connect")
 
-	generatedFilenameExtension = ".client.go"
-	generatedPackageSuffix     = ""
+	generatedFilenameExtension = ".client.go"  //:::Modified:::
+	generatedPackageSuffix     = ""   //:::Modified:::
 
 	usage = "See https://connectrpc.com/docs/go/getting-started to learn how to use this plugin.\n\nFlags:\n  -h, --help\tPrint this help and exit.\n      --version\tPrint the version and exit."
 
@@ -119,14 +119,14 @@ func generate(plugin *protogen.Plugin, file *protogen.File) {
 	generatedFilenamePrefixToSlash := filepath.ToSlash(file.GeneratedFilenamePrefix)
 	file.GeneratedFilenamePrefix = path.Join(
 		path.Dir(generatedFilenamePrefixToSlash),
-		// string(file.GoPackageName), // ensure to create in same dir
+		// string(file.GoPackageName), // ensure to create in same dir   //:::Modified:::
 		path.Base(generatedFilenamePrefixToSlash),
 	)
 	generatedFile := plugin.NewGeneratedFile(
 		file.GeneratedFilenamePrefix+generatedFilenameExtension,
 		protogen.GoImportPath(path.Join(
 			string(file.GoImportPath), 
-			// string(file.GoPackageName), // ensure to create in same dir
+			// string(file.GoPackageName), // ensure to create in same dir   //:::Modified:::
 		)),
 	)
 	generatedFile.Import(file.GoImportPath)
@@ -240,9 +240,9 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	names := newNames(service)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
-	// generateServerInterface(g, service, names)
-	// generateServerConstructor(g, service, names)
-	// generateUnimplementedServerImplementation(g, service, names)
+	// generateServerInterface(g, service, names)   //:::Modified:::
+	// generateServerConstructor(g, service, names)   //:::Modified:::
+	// generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
 }
 
 func generateClientInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
@@ -341,17 +341,14 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 	case isStreamingClient && !isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallClientStream(ctx)")
 	case !isStreamingClient && isStreamingServer:
-		// g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, req)")
-
-		g.P("res := c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("Request"),"(req))")
-		g.P("if err != nil { return nil, err }")
-		g.P("return res.Msg, nil")
+		// g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, req)")    //:::Modified:::
+		g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("Request"),"(req))")  // modified to wrap the request
 
 	case isStreamingClient && isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
-		// g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")
-		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, ",connectPackage.Ident("Request"),"(req))")
+		// g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")   //:::Modified:::
+		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, ",connectPackage.Ident("Request"),"(req))")  // modified to wrap the request and response to message type
 		g.P("if err != nil { return nil, err }")
 		g.P("return res.Msg, nil")
 	}
@@ -513,14 +510,13 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	if method.Desc.IsStreamingServer() {
 		// server streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-			", " + reqName + "*" + g.QualifiedGoIdent("Request") + "[" +
-			g.QualifiedGoIdent(method.Input.GoIdent) + "], " +
+			", " + reqName + "*" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + // this has changes to remove request generic  //:::Modified:::
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
 			") error"
 	}
 	// unary
-	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
+	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
 		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
 		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
 }
@@ -644,7 +640,7 @@ func newNames(service *protogen.Service) names {
 	return names{
 		Base:                base,
 		Client:              fmt.Sprintf("%sClient", base),
-		ClientConstructor:   fmt.Sprintf("new%sClient", base), // changes to lower new to make it internal
+		ClientConstructor:   fmt.Sprintf("new%sClient", base), // changes to lower new to make it internal   //:::Modified:::
 		ClientImpl:          fmt.Sprintf("%sClient", unexport(base)),
 		Server:              fmt.Sprintf("%sHandler", base),
 		ServerConstructor:   fmt.Sprintf("New%sHandler", base),
