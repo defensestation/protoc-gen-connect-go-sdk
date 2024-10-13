@@ -510,14 +510,14 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	if method.Desc.IsStreamingServer() {
 		// server streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-			", " + reqName + "*ssssss" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + // this has changes to remove request generic  //:::Modified:::
+			", " + reqName + "*" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + // this has changes to remove request generic  //:::Modified:::
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
-			") error"
+			") erroraaa"
 	}
 	// unary
 	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
-		", " + reqName + "*ss" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
+		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
 		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
 }
 
