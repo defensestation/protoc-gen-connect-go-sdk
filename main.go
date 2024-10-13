@@ -346,7 +346,7 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
 		// g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")
-		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, +"connectPackage.Ident("Request")"+(req))")
+		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, ",connectPackage.Ident("Request"),"(req))")
 		g.P("if err != nil { return nil, err }")
 		g.P("return res.Msg, nil")
 	}
