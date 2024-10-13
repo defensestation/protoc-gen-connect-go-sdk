@@ -536,7 +536,7 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 		// server streaming
 		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
 			", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
-			g.QualifiedGoIdent(method.Input.GoIdent) + "]) " + 
+			g.QualifiedGoIdent(method.Input.GoIdent) + "], " +
 			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
 			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
 			") error"
