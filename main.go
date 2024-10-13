@@ -516,10 +516,9 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	}
 	// unary
 	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
-		", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
-		g.QualifiedGoIdent(method.Input.GoIdent) + "]) " +
-		"(*" + g.QualifiedGoIdent(connectPackage.Ident("Response")) + "[" +
-		g.QualifiedGoIdent(method.Output.GoIdent) + "], error)"
+		", " + reqName + "*" + method.Input.GoIdent + ") " +
+		"(*" + "[" +
+		method.Output.GoIdent + ", error)"
 }
 
 func procedureConstName(m *protogen.Method) string {
