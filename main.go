@@ -341,7 +341,12 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 	case isStreamingClient && !isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallClientStream(ctx)")
 	case !isStreamingClient && isStreamingServer:
-		g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, req)")
+		// g.P("return c.", unexport(method.GoName), ".CallServerStream(ctx, req)")
+
+		g.P("res := c.", unexport(method.GoName), ".CallServerStream(ctx, ",connectPackage.Ident("Request"),"(req))")
+		g.P("if err != nil { return nil, err }")
+		g.P("return res.Msg, nil")
+		
 	case isStreamingClient && isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
