@@ -345,7 +345,10 @@ func generateClientMethod(g *protogen.GeneratedFile, method *protogen.Method, na
 	case isStreamingClient && isStreamingServer:
 		g.P("return c.", unexport(method.GoName), ".CallBidiStream(ctx)")
 	default:
-		g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")
+		// g.P("return c.", unexport(method.GoName), ".CallUnary(ctx, req)")
+		g.P("res := c.", unexport(method.GoName), ".CallUnary(ctx, +"connectPackage.Ident("Request")"+(req))")
+		g.P("if err != nil { return nil, err }")
+		g.P("return res.Msg, nil")
 	}
 	g.P("}")
 	g.P()
@@ -638,7 +641,7 @@ func newNames(service *protogen.Service) names {
 	return names{
 		Base:                base,
 		Client:              fmt.Sprintf("%sClient", base),
-		ClientConstructor:   fmt.Sprintf("New%sClient", base),
+		ClientConstructor:   fmt.Sprintf("new%sClient", base), // changes to lower new to make it internal
 		ClientImpl:          fmt.Sprintf("%sClient", unexport(base)),
 		Server:              fmt.Sprintf("%sHandler", base),
 		ServerConstructor:   fmt.Sprintf("New%sHandler", base),
