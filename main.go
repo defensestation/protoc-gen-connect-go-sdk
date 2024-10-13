@@ -517,7 +517,7 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 	}
 	// unary
 	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
-		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
+		", " + reqName + "*ss" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
 		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
 }
 
