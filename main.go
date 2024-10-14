@@ -72,6 +72,7 @@ const (
 	httpPackage    = protogen.GoImportPath("net/http")
 	stringsPackage = protogen.GoImportPath("strings")
 	connectPackage = protogen.GoImportPath("connectrpc.com/connect")
+	protoreflectPkg = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
 
 	generatedFilenameExtension = ".client.go"  //:::Modified:::
 	generatedPackageSuffix     = ""   //:::Modified:::
@@ -249,6 +250,15 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 	g.P("var (")
 	for _, service := range file.Services {
 		serviceDescName := unexport(fmt.Sprintf("%sServiceDescriptor", service.Desc.Name()))
+		g.P(serviceDescName, ` `, protoreflectPkg.Ident("ServiceDescriptor"))
+		for _, method := range service.Methods {
+			g.P(procedureVarMethodDescriptor(method), ` `, protoreflectPkg.Ident("MethodDescriptor"))
+		}
+	}
+	g.P(")")
+	g.P("func loadVars() {")
+	for _, service := range file.Services {
+		serviceDescName := unexport(fmt.Sprintf("%sServiceDescriptor", service.Desc.Name()))
 		g.P(serviceDescName, ` = `,
 			g.QualifiedGoIdent(file.GoDescriptorIdent),
 			`.Services().ByName("`, service.Desc.Name(), `")`)
@@ -258,7 +268,7 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 				`.Methods().ByName("`, method.Desc.Name(), `")`)
 		}
 	}
-	g.P(")")
+	g.P("}")
 }
 
 func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
