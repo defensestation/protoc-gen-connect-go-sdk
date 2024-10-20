@@ -281,7 +281,7 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 
 func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	names := newNames(service)
-	// generateSDKClientImplementation(g, service, names)
+	generateSDKClientImplementation(g, service, names)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
 	// generateServerInterface(g, service, names)   //:::Modified:::
