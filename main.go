@@ -272,8 +272,7 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 	// :::Modified:::
 	g.P("init() {")
 	for _, service := range file.Services {
-		g.P(g.QualifiedGoIdent(strings.ToLower(file.GoDescriptorIdent)),
-			`_init()`)
+		g.P(g.QualifiedGoIdent(file.GoDescriptorIdent),`_init()`)
 	}
 	g.P("loadVars()")
 	g.P("}")
