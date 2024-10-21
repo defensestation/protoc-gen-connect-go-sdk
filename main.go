@@ -64,8 +64,8 @@ import (
 const (
 	// skd paths
 	sdkConfigPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/config")
-	sdkdsInterceptorPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/middleware/interceptors")
-	sdkendpointPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/endpoints")
+	sdkdsInterceptorPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/internal/middleware/interceptors")
+	sdkendpointPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/internal/endpoints")
 
 	contextPackage = protogen.GoImportPath("context")
 	errorsPackage  = protogen.GoImportPath("errors")
