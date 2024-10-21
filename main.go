@@ -154,7 +154,7 @@ func generate(plugin *protogen.Plugin, file *protogen.File) {
 			// string(file.GoPackageName), // ensure to create in same dir   //:::Modified:::
 		)),
 	)
-	generatedFile.Import(file.GoImportPath)
+	// generatedFile.Import(file.GoImportPath)
 	generatePreamble(generatedFile, file)
 	generateServiceNameConstants(generatedFile, file.Services)
 	generateServiceNameVariables(generatedFile, file)
