@@ -74,7 +74,7 @@ const (
 	connectPackage = protogen.GoImportPath("connectrpc.com/connect")
 	protoreflectPkg = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
 
-	generatedFilenameExtension = ".client.go"  //:::Modified:::
+	generatedFilenameExtension = ".connect.go"  //:::Modified:::
 	generatedPackageSuffix     = ""   //:::Modified:::
 
 	usage = "See https://connectrpc.com/docs/go/getting-started to learn how to use this plugin.\n\nFlags:\n  -h, --help\tPrint this help and exit.\n      --version\tPrint the version and exit."
