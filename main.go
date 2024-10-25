@@ -64,8 +64,8 @@ import (
 const (
 	// skd paths
 	sdkConfigPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/config")
-	sdkdsInterceptorPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/middleware/interceptors")
-	sdkendpointPackage = protogen.GoImportPath("github.com/defensestation/ds-sdk-go/internal/endpoints")
+	sdkdsInterceptorPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/internal/middleware/interceptors")
+	sdkendpointPackage = protogen.GoImportPath("github.com/defensestation/internal-sdk-go/internal/endpoints")
 
 	contextPackage = protogen.GoImportPath("context")
 	errorsPackage  = protogen.GoImportPath("errors")
@@ -191,7 +191,7 @@ func generate(plugin *protogen.Plugin, file *protogen.File) {
 			// string(file.GoPackageName), // ensure to create in same dir   //:::Modified:::
 		)),
 	)
-	generatedFile.Import(file.GoImportPath)
+	// generatedFile.Import(file.GoImportPath)
 	generatePreamble(generatedFile, file)
 	generateServiceNameConstants(generatedFile, file.Services)
 	generateServiceNameVariables(generatedFile, file)
@@ -309,7 +309,7 @@ func generateServiceNameVariables(g *protogen.GeneratedFile, file *protogen.File
 	// :::Modified:::
 	g.P("func init() {")
 	for _, _ = range file.Services {
-		g.P(g.QualifiedGoIdent(file.GoDescriptorIdent),`_init()`)
+		g.P(strings.ToLower(g.QualifiedGoIdent(file.GoDescriptorIdent)),`_init()`)
 	}
 	g.P("loadVars()")
 	g.P("}")
