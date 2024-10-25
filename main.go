@@ -107,6 +107,43 @@ func generateSDKClientImplementation(g *protogen.GeneratedFile, service *protoge
 	g.P("}")
 }
 
+// custom method
+func clientSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, named bool) string {
+	ctxName := "ctx "
+	reqName := "req "
+	streamName := "stream "
+	if !named {
+		ctxName, reqName, streamName = "", "", ""
+	}
+	if method.Desc.IsStreamingClient() && method.Desc.IsStreamingServer() {
+		// bidi streaming
+		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + ", " +
+			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("BidiStream")) +
+			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + ", " + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
+			") error"
+	}
+	if method.Desc.IsStreamingClient() {
+		// client streaming
+		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + ", " +
+			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ClientStream")) +
+			"[" + g.QualifiedGoIdent(method.Input.GoIdent) + "]" +
+			") (*" + g.QualifiedGoIdent(connectPackage.Ident("Response")) + "[" + g.QualifiedGoIdent(method.Output.GoIdent) + "] ,error)"
+	}
+	if method.Desc.IsStreamingServer() {
+		// server streaming
+		return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
+			", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
+			g.QualifiedGoIdent(method.Input.GoIdent) + "], " +
+			streamName + "*" + g.QualifiedGoIdent(connectPackage.Ident("ServerStream")) +
+			"[" + g.QualifiedGoIdent(method.Output.GoIdent) + "]" +
+			") error"
+	}
+	// unary
+	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
+		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
+		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
+}
+
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "--version" {
 		fmt.Fprintln(os.Stdout, connect.Version)
@@ -284,9 +321,9 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 	generateSDKClientImplementation(g, service, names)
 	generateClientInterface(g, service, names)
 	generateClientImplementation(g, service, names)
-	generateServerInterface(g, service, names)   //:::Modified:::
-	generateServerConstructor(g, service, names)   //:::Modified:::
-	generateUnimplementedServerImplementation(g, service, names)   //:::Modified:::
+	generateServerInterface(g, service, names)   
+	generateServerConstructor(g, service, names)   
+	generateUnimplementedServerImplementation(g, service, names)   
 }
 
 func generateClientInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
@@ -426,7 +463,7 @@ func clientSignature(g *protogen.GeneratedFile, method *protogen.Method, named b
 			", error)"
 	}
 	// unary; symmetric so we can re-use server templating
-	return method.GoName + serverSignatureParams(g, method, named)
+	return method.GoName + clientSignatureParams(g, method, named)
 }
 
 func generateServerInterface(g *protogen.GeneratedFile, service *protogen.Service, names names) {
@@ -560,9 +597,11 @@ func serverSignatureParams(g *protogen.GeneratedFile, method *protogen.Method, n
 			") error"
 	}
 	// unary
-	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) + // this has changes to remove request and response generic   //:::Modified:::
-		", " + reqName + "*" +  g.QualifiedGoIdent(method.Input.GoIdent) + ") " +
-		"(*" +  g.QualifiedGoIdent(method.Output.GoIdent) + ", error)"
+	return "(" + ctxName + g.QualifiedGoIdent(contextPackage.Ident("Context")) +
+		", " + reqName + "*" + g.QualifiedGoIdent(connectPackage.Ident("Request")) + "[" +
+		g.QualifiedGoIdent(method.Input.GoIdent) + "]) " +
+		"(*" + g.QualifiedGoIdent(connectPackage.Ident("Response")) + "[" +
+		g.QualifiedGoIdent(method.Output.GoIdent) + "], error)"
 }
 
 func procedureConstName(m *protogen.Method) string {
